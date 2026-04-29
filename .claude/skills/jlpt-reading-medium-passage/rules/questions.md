@@ -141,24 +141,35 @@ Với mỗi distractor, tự hỏi:
 5. **Only-one-correct test**: Có thể có 2 đáp án cùng đúng không?
    - CÓ → sửa cho rõ chỉ 1 đáp án đúng
 
-### R6.5 Format explanation (3 phần VN + EN)
+### R6.5 Format explanation — 3 phần BẮT BUỘC (VN + EN)
 
-Mỗi câu có `explain_vn_X` và `explain_en_X` viết theo cùng cấu trúc 3 phần:
+> **Explanation không chỉ "có nội dung" — nó phải CHỨNG MINH câu hỏi + đáp án đúng có logic.**
+> Agent viết `explain_vn_X` và `explain_en_X` theo đúng 3 phần sau, **trích dẫn cụ thể** từ bài (paragraph/câu).
 
-**Phần 1 — Đáp án đúng**: Nêu đáp án đúng là số mấy + trích câu/đoạn trong bài xác nhận + giải thích paraphrase nếu có.
+**Phần 1 — Đáp án đúng (BẮT BUỘC trích bài):**
+- Nêu rõ "Đáp án đúng: (X)" + nội dung paraphrase
+- **Trích dẫn câu/đoạn cụ thể** trong bài xác nhận đáp án (vd: "Đoạn 2 viết: `「...」`", "Câu cuối paragraph 3: `「...」`")
+- Nếu là multi-question, chỉ rõ paragraph nào trỏ đến (vd: "trong paragraph 3 đề cập...").
+- Nêu paraphrase: đáp án dùng từ đồng nghĩa nào với bài
 
-**Phần 2 — Đáp án sai**: Giải thích TẠI SAO từng đáp án sai. Nêu rõ loại bẫy (reversal / detail swap / scope / misinterpretation / part of truth / over-generalization) và chỉ ra info/ý trong bài khiến đáp án đó sai.
+**Phần 2 — Đáp án sai (TỪNG đáp án + loại bẫy):**
+- Đi qua **TẤT CẢ 3 đáp án sai** (1 đáp án 1 dòng), không bỏ sót
+- Mỗi đáp án sai phải nêu:
+  1. **Loại bẫy** (Reversal / Detail swap / Scope / Misinterpretation / Part of truth / Over-generalization / Mixing)
+  2. **Trích cụ thể** từ bài chứng minh tại sao sai (vd: "Bài đoạn 1 nói X nhưng đáp án 2 nói Y → trái ý")
+- KHÔNG được dùng câu chung chung kiểu "đáp án sai vì không khớp bài" — phải chỉ rõ ý nào sai và bài nói gì khác
 
-**Phần 3 — Tóm tắt**: 1 câu tóm tắt ý chính của câu hỏi này (helpful để AI học).
+**Phần 3 — Tóm tắt chiến lược:**
+- 1 câu ngắn: thí sinh cần làm gì để giải đúng dạng này (vd: "Tìm reason phải đọc kỹ paragraph 2 trước khi loại trừ").
 
-### R6.6 Ví dụ đáp án + explanation
+### R6.6 Ví dụ đáp án + explanation (BÀI N3 mẫu)
 
-**Bài N3** (giả tưởng): Tác giả viết về việc trẻ em thời nay không biết cảm ơn, vì được chiều từ nhỏ.
+**Bài N3** (giả tưởng — bài 3 paragraph): Tác giả nhận xét trẻ em thời nay không biết cảm ơn, lý do là được nuông chiều từ nhỏ. Paragraph 2 giải thích cơ chế "có sẵn = không trân trọng", paragraph 3 đề xuất giải pháp "tạo cơ hội cho trẻ chờ đợi".
 
-**Question 1** (`question_reason_explanation`):
+**Question 2** (`question_reason_explanation`):
 > なぜ筆者は「今の子どもたちは感謝を知らない」と考えているか。
 
-**Answers**:
+**Answers** (4 options, no prefix):
 ```
 小さい頃から何でも与えられすぎているから
 学校で感謝の大切さを教えないから
@@ -170,23 +181,31 @@ Mỗi câu có `explain_vn_X` và `explain_en_X` viết theo cùng cấu trúc 3
 
 **explain_vn**:
 ```
-Đáp án đúng: 1. Bài viết: "小さい頃から親にすべてを与えられている子は、何かをもらうことを当たり前に感じる" — xác nhận lý do là được chiều từ nhỏ. Đáp án 1 paraphrase chính xác.
-Đáp án sai:
-- 2 (Scope): Bịa — bài không đề cập đến trường học.
-- 3 (Part of truth): Bài có nhắc bố mẹ bận, nhưng đó không phải lý do chính theo tác giả.
-- 4 (Over-generalization): Bài không nói tính cách trẻ em thay đổi, chỉ nói về cách nuôi dạy.
-Tóm tắt: Câu hỏi test khả năng xác định nguyên nhân chính được tác giả đưa ra (không phải lý do phụ hoặc kiến thức ngoài bài).
+ĐÁP ÁN ĐÚNG (1): 小さい頃から何でも与えられすぎているから (Vì được cho quá nhiều thứ từ nhỏ).
+Trong paragraph 2, tác giả viết: 「小さい頃から親にすべてを与えられている子は、何かをもらうことを当たり前に感じるようになる」 (Đứa trẻ được bố mẹ cho mọi thứ từ nhỏ sẽ coi việc nhận là chuyện đương nhiên). Đáp án 1 paraphrase đúng cụm "与えられすぎている" = "được cho quá nhiều".
+
+ĐÁP ÁN SAI:
+(2) 学校で感謝の大切さを教えないから — Scope: bài không đề cập trường học ở bất kỳ paragraph nào, đây là phạm vi ngoài bài.
+(3) 親が忙しくて子どもと話す時間がないから — Part of truth: paragraph 1 có nhắc "bố mẹ thời nay bận rộn" nhưng tác giả KHÔNG coi đây là lý do chính của việc trẻ thiếu cảm ơn (chỉ là bối cảnh phụ).
+(4) 子どもたち自身の性格が変わったから — Over-generalization: bài chỉ phân tích cách nuôi dạy, KHÔNG kết luận tính cách trẻ thay đổi. Đáp án mở rộng quá phạm vi tác giả nói.
+
+Tóm tắt: Câu hỏi reason → tìm câu KHẲNG ĐỊNH NGUYÊN NHÂN trong bài (paragraph 2). Loại trừ đáp án "có nhắc nhưng không phải lý do chính" (3) và đáp án mở rộng/bịa phạm vi (2, 4).
 ```
 
 **explain_en**:
 ```
-Correct answer: 1. Article states: "Children who receive everything from parents since childhood come to take receiving as a matter of course" — confirms the reason is being spoiled from young. Option 1 is a precise paraphrase.
-Wrong answers:
-- 2 (Scope): Fabricated — article doesn't mention schools.
-- 3 (Part of truth): Article mentions busy parents but not as the main reason author cites.
-- 4 (Over-generalization): Article doesn't claim children's personalities have changed, only about how they're raised.
-Summary: Question tests identifying the main cause explicitly given by the author (not secondary reasons or outside knowledge).
+CORRECT ANSWER (1): 小さい頃から何でも与えられすぎているから (Because they're given too much from a young age).
+In paragraph 2, the author writes: 「小さい頃から親にすべてを与えられている子は、何かをもらうことを当たり前に感じるようになる」 (Children given everything by their parents from a young age come to take receiving as a matter of course). Option 1 paraphrases "与えられすぎている" = "given too much" precisely.
+
+WRONG ANSWERS:
+(2) 学校で感謝の大切さを教えないから — Scope: article never mentions schools in any paragraph; this is outside the article's scope.
+(3) 親が忙しくて子どもと話す時間がないから — Part of truth: paragraph 1 mentions "modern parents are busy" as background, but the author does NOT cite this as the main cause of children's lack of gratitude.
+(4) 子どもたち自身の性格が変わったから — Over-generalization: article only analyzes upbringing, NOT children's personality changes. The option overextends beyond what the author claims.
+
+Summary: For reason questions → find the explicit cause in the article (paragraph 2). Eliminate "mentioned but not main cause" (3) and out-of-scope options (2, 4).
 ```
+
+**Explanation phải bằng cả 2 ngôn ngữ (VN + EN)** với cùng nội dung logic — không phải dịch máy.
 
 ### R6.7 Đa câu trong 1 bài — Tránh trùng
 
