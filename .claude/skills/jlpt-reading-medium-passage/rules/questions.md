@@ -65,6 +65,20 @@ N4/N5 có thể nhẹ hơn nhưng vẫn nên tránh copy > 6 từ liên tiếp.
 
 Mỗi câu hỏi đứng độc lập — không tham chiếu câu hỏi khác (không có `前の問題で言及した...`).
 
+### Văn phong câu hỏi (thể động từ) theo level — BẮT BUỘC
+
+Câu hỏi (`question_X`) và 4 lựa chọn (`answer_X`) phải dùng đúng **thể động từ** theo level:
+
+| Level | Thể bắt buộc | Đặc trưng kết câu |
+|-------|--------------|-------------------|
+| **N1, N2, N3** | **Thể thường** (普通体 / だ・である調) | `〜か。` / `〜のはどれか。` / `〜と考えられるか。` (KHÔNG dùng です/ます) |
+| **N4, N5** | **Thể ます** (です・ます調) | `〜ですか。` / `〜のはどれですか。` / `〜と思いますか。` |
+
+**Quy tắc cứng:**
+- N1/N2/N3: KHÔNG dùng `です` / `ます` trong câu hỏi và đáp án (trừ khi trích nguyên cảm trong bài)
+- N4/N5: PHẢI dùng `です` / `ます` đầy đủ
+- Câu hỏi và **cả 4 đáp án** phải nhất quán cùng thể (không trộn lẫn N3 thường + N4 ます)
+
 ---
 
 ## R6. Đáp án (`answer_X`, `correct_answer_X`, `explain_vn_X`, `explain_en_X`)
