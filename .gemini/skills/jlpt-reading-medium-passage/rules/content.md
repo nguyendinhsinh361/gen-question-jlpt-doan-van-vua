@@ -16,24 +16,24 @@
 
 ### Topic tag — BẮT BUỘC
 
-Tag chọn từ `rules/topic.json` — Phase 2 dùng **tiếng Việt** (khớp data mẫu & `smoke_test.csv`).
+Tag PHẢI bằng **tiếng Anh** — chọn từ cột `en` của `rules/topic.json` (catalog 287 topics, 13 category). Tham khảo `rules/rule_doc_hieu.md` (rule chung của giáo viên cho TOÀN BỘ phần đọc hiểu) để chọn topic phù hợp level. 13 category chính:
 
-| Category | Ví dụ tag (vi) |
+| Category | Ví dụ tag (en) |
 |----------|----------------|
-| Đời sống & Tâm lý | `tâm lý học`, `cảm xúc`, `tư duy`, `động lực`, `phát triển bản thân`, `hạnh phúc`, `tuổi thơ`, `trải nghiệm cá nhân` |
-| Xã hội & Quan hệ | `xã hội`, `gia đình`, `mối quan hệ`, `tình bạn`, `nuôi dạy con`, `truyền thống`, `phép lịch sự` |
-| Giáo dục & Ngôn ngữ | `giáo dục`, `trường học`, `học tập`, `ngôn ngữ`, `giao tiếp`, `thư viện` |
-| Kinh tế & Kinh doanh | `kinh tế`, `kinh doanh`, `thị trường`, `tiêu dùng`, `tài chính cá nhân` |
-| Công việc | `công việc`, `sự nghiệp`, `nơi làm việc`, `email công việc`, `thông báo` |
-| Khoa học & Công nghệ | `khoa học`, `sinh học`, `công nghệ`, `nghiên cứu`, `năng lượng` |
-| Sức khỏe & Y học | `sức khỏe`, `y học`, `dinh dưỡng`, `tập luyện`, `căng thẳng` |
-| Môi trường & Tự nhiên | `môi trường`, `tự nhiên`, `động vật`, `thời tiết`, `mùa`, `tái chế` |
-| Văn hóa & Nghệ thuật | `văn hóa`, `nghệ thuật`, `âm nhạc`, `văn học`, `triết học`, `thể thao`, `du lịch` |
-| Đời sống & Tiêu dùng | `đời sống thường nhật`, `mua sắm`, `thức ăn`, `nấu ăn`, `thú cưng` |
-| Hạ tầng & Truyền thông | `giao thông`, `thành phố`, `truyền thông`, `báo chí` |
+| Personal Life & Psychology | `psychology`, `emotion`, `mindset`, `motivation`, `personal growth`, `happiness`, `childhood`, `personal reflection` |
+| Society & Relationships | `society`, `family`, `relationships`, `friendship`, `parenting`, `tradition`, `etiquette` |
+| Education & Language | `education`, `school`, `learning`, `language`, `communication`, `library` |
+| Business, Economics & Finance | `economics`, `business`, `market`, `consumption`, `personal finance` |
+| Work & Career | `work`, `career`, `workplace`, `announcement`, `correspondence` |
+| Science & Technology | `science`, `biology`, `technology`, `research`, `energy` |
+| Health & Medicine | `health`, `medicine`, `nutrition`, `exercise`, `stress` |
+| Environment & Nature | `environment`, `nature`, `animals`, `weather`, `season`, `recycling` |
+| Culture, Arts & Entertainment | `culture`, `art`, `music`, `literature`, `philosophy`, `sports`, `travel` |
+| Daily Life & Consumerism | `daily life`, `shopping`, `food`, `cooking`, `pets` |
+| Infrastructure & Media | `transportation`, `city`, `media`, `journalism` |
 
-> **⚠️ KHÔNG dùng tag tiếng Anh hoặc tiếng Nhật.**
-> Phải dùng tiếng Việt đúng cột `vi` của `rules/topic.json` (ví dụ: ✅ `văn hóa`, `kinh tế`, `đời sống thường nhật`).
+> **⚠️ KHÔNG dùng tag tiếng Việt hoặc tiếng Nhật. TUYỆT ĐỐI tiếng Anh.**
+> Phải dùng tiếng Anh slug đúng cột `en` của `rules/topic.json` (✅ `culture`, `economics`, `daily life`).
 
 Trong batch > 5 bài, chọn topic từ ≥ 3 category khác nhau để đa dạng.
 

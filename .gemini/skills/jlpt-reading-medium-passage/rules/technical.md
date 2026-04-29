@@ -226,7 +226,7 @@ Rules:
 |--------|------------------------|
 | `_id` | `{LEVEL}_{uuid.uuid4().hex}` — 32-char hex |
 | `level` | `N1`, `N2`, `N3`, `N4`, `N5` |
-| `tag` | Topic tiếng Việt từ `rules/topic.json` (VD: `tâm lý học`, `kinh tế`, `văn hóa`) |
+| `tag` | Topic **tiếng Anh** slug từ cột `en` của `rules/topic.json` (VD: `psychology`, `economics`, `culture`) |
 | `jp_char_count` | Result of `count_body_chars()` |
 | `kind` | **Always `đoạn văn vừa`** |
 | `general_audio` | `""` (empty) |
