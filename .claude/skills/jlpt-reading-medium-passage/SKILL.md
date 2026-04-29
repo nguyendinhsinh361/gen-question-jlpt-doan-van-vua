@@ -170,7 +170,7 @@ Agent đọc lại file HTML và kiểm tra:
 | 5 | **`.passage` div** | Xem HTML structure | Có `<div class="passage">` bọc nội dung |
 | 6 | **White background** | Xem CSS | `.passage` có `background: white`, body `#f9fafb` |
 | 7 | **Furigana format** | Tìm ngoặc `漢字(かんじ)` hoặc `漢字【かんじ】` | Không có — tất cả furigana dùng `<ruby><rt>` |
-| 8 | **Ruby có `<rt>`** | Xem mọi `<ruby>...</ruby>` | Tất cả đều có `<rt>` bên trong (chạy `process_html.py --validate`) |
+| 8 | **Ruby có `<rt>` không rỗng** | Xem mọi `<ruby>...</ruby>` | Tất cả đều có `<rt>` chứa furigana **không rỗng** (vd `<ruby>興味<rt>きょうみ</rt></ruby>`). CẤM `<ruby>興味</ruby>` (thiếu rt) hoặc `<ruby>興味<rt></rt></ruby>` (rt rỗng). Auto-check: `process_html.py --validate` |
 | 9 | **Ruby count** | Đếm số `<ruby>` | Trong ngưỡng: N5 0-3, N4 0-6, N3 0-10, N2 0-8, N1 0-4 |
 | 10 | **Marker/annotation/source đúng level** | Xem có `<u>`, marker ①, `注`, source line, blank `[ ]` không | Phù hợp level (N4/N5 KHÔNG source, N5 KHÔNG annotation; N1 khuyến khích blank; xem R8) |
 
@@ -226,6 +226,12 @@ Agent đọc TOÀN BỘ câu hỏi + 4 đáp án từ CSV và đánh giá từng
 ### BƯỚC 4: SỬA & LẶP LẠI
 
 > **⛔ Khi sửa HTML, CẬP NHẬT CSV — chạy lại `process_html.py --refresh` để cập nhật `text_read`, `jp_char_count` trong CSV.**
+>
+> **🚨 ĐẶC BIỆT khi sửa `<ruby>` thiếu/rỗng `<rt>`:** Đây là lỗi PHỔ BIẾN — agent hay chỉ sửa HTML mà QUÊN refresh CSV → CSV cột `text_read` vẫn chứa ruby hỏng → AI fine-tuning data BỊ HỎNG.
+> Workflow BẮT BUỘC khi sửa ruby:
+> 1. Sửa HTML: thay `<ruby>興味</ruby>` → `<ruby>興味<rt>きょうみ</rt></ruby>`
+> 2. **BẮT BUỘC** chạy: `python3 .claude/skills/jlpt-reading-medium-passage/scripts/process_html.py --refresh --html-dir assets/html/doan_van_vua --csv sheets/samples_v1.csv`
+> 3. Verify: `python3 .claude/skills/jlpt-reading-medium-passage/scripts/process_html.py --validate --html-dir assets/html/doan_van_vua --csv sheets/samples_v1.csv` — output PHẢI có dòng `✅ CSV ...: 0 row với broken ruby`. Nếu vẫn báo `🚫 CSV ... có N row với broken ruby` → CSV chưa sync, chạy lại `--refresh`.
 >
 > Không có screenshot nên KHÔNG cần chạy lại screenshot script.
 
