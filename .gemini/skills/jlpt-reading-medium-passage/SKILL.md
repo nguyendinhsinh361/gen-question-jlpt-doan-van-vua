@@ -71,7 +71,7 @@ description: >
 
 1. **Đọc `rules/rule_doc_hieu.md`** — **rule chung của giáo viên tiếng Nhật cho TOÀN BỘ phần đọc hiểu** (source-of-truth cho từ vựng/ngữ pháp theo level, kỹ thuật ra câu hỏi, distractor traps). Section 3-5 áp dụng trực tiếp. Section 1-2 (chủ đề + form) chủ yếu cho "tìm thông tin" — tham khảo tinh thần, áp dụng linh hoạt cho prose reading.
 2. **Đọc rules skill**: `rules/content.md` + `rules/vocabulary.md` + `rules/technical.md` + `rules/questions.md`
-3. **Đọc `rules/jlpt_kanji.csv`** — dùng để tra level từng kanji khi quyết định furigana
+3. **Đọc `rules/kanji_simplified.csv`** — dùng để tra level từng kanji khi quyết định furigana
 4. **Scan `sheets/samples_v1.csv` và `data/doan_van_vua_n*_clean.json`** — xem format, topic đã dùng → chọn format chưa/ít dùng
 5. **Load 2-3 sample calibrate style**:
    ```bash
@@ -102,7 +102,7 @@ description: >
    - `word-break: keep-all` (đảm bảo xuống dòng sạch ở ranh giới từ)
    - `<p>` thuần, không `<br>` giữa câu (trừ N5 letter/diary)
    - Marker ①②③ khớp với các câu hỏi `question_reference`/`question_fill_in_the_blank`
-   - Furigana chỉ cho từ vượt level (tra `rules/jlpt_kanji.csv`)
+   - Furigana chỉ cho từ vượt level (tra `rules/kanji_simplified.csv`)
    - **Minimum 3 paragraph** cho N1-N4 (cần đủ nội dung cho multi-question)
 6. **Gen 2-3 câu hỏi + 4 đáp án mỗi câu** theo `rules/questions.md`:
    - 4 options ngăn cách `\n`, KHÔNG số thứ tự `1.`, `①`, `1)`
@@ -183,7 +183,7 @@ Agent đọc lại file HTML và kiểm tra:
 | 13 | **Nội dung logic + đủ depth cho multi-question** | Đọc toàn bài | Ý nhất quán, có ≥ 3 paragraph cho N1-N4, đủ nội dung phủ 2-3 câu hỏi khác nhau |
 | 14 | **Không mơ hồ (test 2 cách hiểu)** | Đọc từng câu, thử hiểu theo cách 2 | Chỉ có DUY NHẤT 1 cách hiểu hợp lý cho từng câu hỏi |
 | 15 | **Từ vựng đúng level** | Đọc từng từ, đối chiếu R3 | Key terms ≤ level, không dùng ngữ pháp vượt level |
-| 16 | **Furigana đúng từ (tra CSV)** | Tra từng kanji trong `rules/jlpt_kanji.csv` | Mọi từ có kanji vượt level đều có `<ruby><rt>`. Không thừa furigana cho từ đúng level. Không dạng "Ab" (週かん) |
+| 16 | **Furigana đúng từ (tra CSV)** | Tra từng kanji trong `rules/kanji_simplified.csv` | Mọi từ có kanji vượt level đều có `<ruby><rt>`. Không thừa furigana cho từ đúng level. Không dạng "Ab" (週かん) |
 
 #### PHẦN C: CÂU HỎI & ĐÁP ÁN (10 checks — áp dụng cho TỪNG câu hỏi)
 
@@ -243,7 +243,7 @@ Agent đọc TOÀN BỘ câu hỏi + 4 đáp án từ CSV và đánh giá từng
 | #7, #8, #9 (ruby) | Sửa ruby tags | Chạy `--refresh` → QC lại |
 | #10 (visual level) | Thêm/bớt annotation/source/marker theo R8 | Chạy `--refresh` → QC lại |
 | #11-#15 | Gen lại nội dung (giữ _id) | Chạy `--refresh` → QC lại |
-| #16 (furigana tra CSV) | Sửa ruby tags (tra lại `rules/jlpt_kanji.csv`) | Chạy `--refresh` → QC lại |
+| #16 (furigana tra CSV) | Sửa ruby tags (tra lại `rules/kanji_simplified.csv`) | Chạy `--refresh` → QC lại |
 | #17 (số câu hỏi) | Thêm/xóa câu bằng `fill_qa.py` để đúng số slot | QC lại |
 | #18, #19 (labels) | Sửa label trong `fill_qa.py` (dùng đủ `question_` prefix + đa dạng) | QC lại |
 | #20 (marker ko khớp) | Sửa HTML (thêm/bớt marker) hoặc sửa câu hỏi | Chạy `--refresh` nếu sửa HTML → QC lại |
@@ -360,7 +360,7 @@ python3 .claude/skills/jlpt-reading-medium-passage/scripts/load_references.py --
 - Data gốc DÙNG `<br>` nhiều — thói quen xấu. Output HTML skill KHÔNG theo.
 - Data gốc có `<span>` bọc paragraph — output KHÔNG cần.
 - Data gốc N1 thường có 3 câu hỏi — skill follow spec `EXPECTED_Q_COUNT` (N1=2), không bắt chước data.
-- Data gốc dùng ruby không đều (N4 thường rắc ruby thừa) — output follow `rules/jlpt_kanji.csv`.
+- Data gốc dùng ruby không đều (N4 thường rắc ruby thừa) — output follow `rules/kanji_simplified.csv`.
 
 Chi tiết phân tích từng level xem `references/sample-analysis.md`.
 
@@ -382,4 +382,4 @@ Chi tiết phân tích từng level xem `references/sample-analysis.md`.
 
 ## Cảnh báo bảo mật dữ liệu
 
-> **🚫 KHÔNG ĐƯỢC GHI VÀO THƯ MỤC `rules/`** — `rules/question_sheet.csv`, `rules/topic.json`, `rules/jlpt_kanji.csv`, `rules/question_format.json`, `rules/mission.json`, `rules/rule_doc_hieu.md` là file tham chiếu, chỉ đọc. Mọi dữ liệu gen phải ghi vào `sheets/samples_v1.csv`.
+> **🚫 KHÔNG ĐƯỢC GHI VÀO THƯ MỤC `rules/`** — `rules/question_sheet.csv`, `rules/topic.json`, `rules/kanji_simplified.csv`, `rules/question_format.json`, `rules/mission.json`, `rules/rule_doc_hieu.md` là file tham chiếu, chỉ đọc. Mọi dữ liệu gen phải ghi vào `sheets/samples_v1.csv`.

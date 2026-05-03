@@ -33,7 +33,7 @@ Làm đúng theo SKILL.md — từng bài một, đọc rules/ trước khi gen.
 ⛔ CHAR RANGE — Hard Reject phải gen lại (xem chi tiết trong rules/content.md):
 N1 530–620 | N2 470–560 | N3 380–460 | N4 280–350 | N5 250–320
 
-⛔ FURIGANA — chỉ cho từ VƯỢT level. Cấm dạng "Ab". Tra rules/jlpt_kanji.csv.
+⛔ FURIGANA — chỉ cho từ VƯỢT level. Cấm dạng "Ab". Tra rules/kanji_simplified.csv.
 
 Sau khi gen xong mỗi bài, tự QC checklist trong SKILL.md (HTML + CSV + multi-question coverage → log PASS/FAIL). 1 FAIL = sửa → QC lại. Tất cả PASS mới sang bài tiếp.
 Điền Q&A bằng scripts/fill_qa.py (KHÔNG sửa CSV bằng tay).
@@ -53,7 +53,7 @@ Lưu CSV vào sheets/samples_v1.csv. HTML lưu vào assets/html/doan_van_vua/{LE
 Trước khi gen:
 1. Đọc rules/rule_doc_hieu.md (rule giáo viên — source-of-truth cho vocab/grammar/distractor)
 2. Đọc rules/content.md + rules/vocabulary.md + rules/technical.md + rules/questions.md
-3. Đọc rules/jlpt_kanji.csv để tra level kanji
+3. Đọc rules/kanji_simplified.csv để tra level kanji
 4. Đọc 1-2 sample: scripts/load_references.py --level {LEVEL} --count 2
 5. Scan sheets/samples_v1.csv xem topic + label combo nào đã dùng
 
