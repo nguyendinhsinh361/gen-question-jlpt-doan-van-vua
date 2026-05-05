@@ -3,92 +3,51 @@
 ## Cách dùng
 
 Copy prompt bên dưới, thay `{số}` rồi paste vào Claude hoặc Gemini.
-SKILL.md chứa workflow + checklist QC. rules/ chứa chi tiết. Prompt chỉ cần nói **cái gì** và **bao nhiêu**.
 
-**Đặc thù dạng này: multi-question** — mỗi bài 2-3 câu hỏi phủ các đoạn/ý KHÁC NHAU (N1/N2/N5 = 2 câu, N3/N4 = 3 câu).
+**Đặc thù: multi-question** — mỗi bài 2-3 câu phủ đoạn/ý KHÁC NHAU (N1/N2/N5 = 2 câu, N3/N4 = 3 câu).
+
+> **🚨 ZERO-TOLERANCE QC**: Chỉ cần **1 tiêu chí FAIL** trong checklist QC của SKILL.md → **fix ngay hoặc gen lại** trước khi sang bài tiếp.
 
 ---
 
-## Prompt ngắn (khuyên dùng)
+## Prompt
 
 ```
 Đọc .claude/skills/jlpt-reading-medium-passage/SKILL.md rồi gen bài đọc hiểu đoạn văn vừa:
 - N5: {số} bài | N4: {số} bài | N3: {số} bài | N2: {số} bài | N1: {số} bài
 
-Lưu CSV vào sheets/samples_v1.csv. HTML lưu vào assets/html/doan_van_vua/{LEVEL}_{uuid}.html.
-Làm đúng theo SKILL.md — từng bài một, đọc rules/ trước khi gen.
+Lưu CSV: sheets/samples_v1.csv. HTML: assets/html/doan_van_vua/{LEVEL}_{uuid}.html.
 
-⛔ Q COUNT BẮT BUỘC theo level (đọc spec):
-- N1 = 2 câu | N2 = 2 câu | N3 = 3 câu | N4 = 3 câu | N5 = 2 câu
-- Slot không dùng phải để empty (vd N1 chỉ fill question_{1,2}, question_{3,4,5} = "")
+═══ BƯỚC 0 — CHUẨN BỊ (1 lần) ═══
+1. Đọc rules/rule_doc_hieu.md (rule giáo viên — source-of-truth, 11 phần). Áp dụng đặc biệt:
+   - Phần 2.4 (Thể chia 文体の統一): N1/N2/N3 → 普通形 (だ・である); N4/N5 → ます形. Văn bản + câu hỏi + 4 đáp án (mọi câu) thống nhất 1 thể. N5 thêm わかち書き.
+   - Phần 3 (Furigana per level), Phần 4 (8 loại Q), Phần 5 (5 loại bẫy chuẩn).
+2. Đọc rules/content.md + vocabulary.md + technical.md + questions.md.
+3. Đọc rules/kanji_jlpt_sensei.csv (2495 kanji) để tra furigana.
+4. Load 2-3 sample: scripts/load_references.py --level {LEVEL} --count 2-3.
+5. Scan sheets/samples_v1.csv xem topic + question_label combo đã dùng.
 
-⛔ COVERAGE RULE (multi-question): các câu trong 1 bài PHẢI test các đoạn/ý KHÁC NHAU (không 2 câu cùng hỏi 1 đoạn). Marker ①② trong HTML phải khớp câu hỏi reference.
+═══ BƯỚC 1→5 — LẶP CHO TỪNG BÀI ═══
+1. Gen _id = {LEVEL}_{uuid32}; chọn format + topic + Q label combo chưa/ít dùng.
+2. Tag = **tiếng Anh** từ cột `en` của rules/topic.json. TUYỆT ĐỐI không tiếng Việt/Nhật.
+3. Gen HTML: container đúng spec, <p> thuần (không <br>), marker ①② khớp Q reference, furigana chỉ vượt level (cấm "Ab"), **thể chia đúng level (Phần 2.4)**.
+4. Gen Q + 4 đáp án (newline \n, KHÔNG prefix); ≥ 2 unique question_label per bài; mỗi câu test đoạn/ý KHÁC NHAU; distractor ≥ 3 loại bẫy dùng info THẬT.
+5. Tạo CSV row bằng scripts/process_html.py. Fill Q&A bằng scripts/fill_qa.py (KHÔNG sửa CSV tay).
 
-⛔ ĐA DẠNG — BẮT BUỘC:
-1. Đọc rules/rule_doc_hieu.md (rule giáo viên — section 3-5 áp dụng trực tiếp) + rules/content.md (chủ đề + char range) + rules/questions.md (label distribution per level).
-2. Scan sheets/samples_v1.csv xem topic + question_label combo đã dùng.
-3. Trong cùng level: KHÔNG trùng topic; dùng ≥ 2 question_label khác nhau per bài (label diversity).
-4. Tag **tiếng Anh** từ cột `en` của `rules/topic.json` (vd: family, economics, culture). TUYỆT ĐỐI không tiếng Việt/Nhật.
+═══ BƯỚC 2 — QC ZERO-TOLERANCE (BẮT BUỘC) ═══
+Tự đánh giá checklist 4 phần trong SKILL.md, log PASS/FAIL:
+- A. HTML + B. Content (chủ đề, từ vựng level, **thể chia nhất quán**) + C. Q&A (label, đáp án, explain VN+EN, self-solve khớp correct) + D. Multi-Q Coverage
+- **1 FAIL = fix ngay hoặc gen lại → refresh CSV (nếu sửa HTML) → QC lại từ đầu**. CẤM bỏ qua.
 
-⛔ CHAR RANGE — Hard Reject phải gen lại (xem chi tiết trong rules/content.md):
-N1 530–620 | N2 470–560 | N3 380–460 | N4 280–350 | N5 250–320
+═══ HARD REJECT (gen lại ngay) ═══
+- Q count sai: N1=2, N2=2, N3=3, N4=3, N5=2 (slot dư phải empty)
+- Char range ngoài (xem rules/content.md): N1 530–620 | N2 470–560 | N3 380–460 | N4 280–350 | N5 250–320
+- 2 câu cùng test 1 đoạn/ý (vi phạm coverage)
+- Marker ①② trong HTML không khớp Q reference (hoặc marker dư)
+- <ruby> thiếu <rt> hoặc <rt> rỗng; furigana dạng "Ab"
+- Thể chia trộn lẫn trong bài (vd N3 vừa だ vừa です)
+- Tag tiếng Việt/Nhật; trong cùng level: trùng topic hoặc <2 unique label per bài
 
-⛔ FURIGANA — chỉ cho từ VƯỢT level. Cấm dạng "Ab". Tra rules/kanji_jlpt_sensei.csv.
-
-Sau khi gen xong mỗi bài, tự QC checklist trong SKILL.md (HTML + CSV + multi-question coverage → log PASS/FAIL). 1 FAIL = sửa → QC lại. Tất cả PASS mới sang bài tiếp.
-Điền Q&A bằng scripts/fill_qa.py (KHÔNG sửa CSV bằng tay).
-Sửa HTML = chạy lại process_html.py --refresh.
-Verify cuối: python3 .claude/skills/jlpt-reading-medium-passage/scripts/process_html.py --validate --html-dir assets/html/doan_van_vua
-```
-
----
-
-## Prompt có thêm ràng buộc (khi cần kiểm soát chất lượng)
-
-```
-Đọc .claude/skills/jlpt-reading-medium-passage/SKILL.md rồi gen bài đọc hiểu đoạn văn vừa:
-- N5: {số} bài | N4: {số} bài | N3: {số} bài | N2: {số} bài | N1: {số} bài
-
-Lưu CSV vào sheets/samples_v1.csv. HTML lưu vào assets/html/doan_van_vua/{LEVEL}_{uuid}.html.
-Trước khi gen:
-1. Đọc rules/rule_doc_hieu.md (rule giáo viên — source-of-truth cho vocab/grammar/distractor)
-2. Đọc rules/content.md + rules/vocabulary.md + rules/technical.md + rules/questions.md
-3. Đọc rules/kanji_jlpt_sensei.csv để tra level kanji
-4. Đọc 1-2 sample: scripts/load_references.py --level {LEVEL} --count 2
-5. Scan sheets/samples_v1.csv xem topic + label combo nào đã dùng
-
-⛔ Q COUNT BẮT BUỘC: N1=2, N2=2, N3=3, N4=3, N5=2. Slot dư phải empty.
-
-⛔ MULTI-QUESTION COVERAGE:
-- Mỗi câu test đoạn/ý KHÁC NHAU (không 2 câu trùng đoạn)
-- Marker ①② trong HTML khớp câu hỏi reference (① ↔ Q reference 1, ② ↔ Q reference 2)
-- Không có marker dư (trong HTML mà không câu hỏi nào hỏi)
-
-⛔ ĐA DẠNG CHỦ ĐỀ + LABEL:
-- Trong cùng level: KHÔNG trùng topic; mỗi bài ≥ 2 question_label khác nhau
-- Cross-level: ưu tiên topic chưa xuất hiện
-- Tag **tiếng Anh** từ cột `en` của `rules/topic.json` (TUYỆT ĐỐI không tiếng Việt/Nhật)
-
-⛔ FURIGANA ZERO-TOLERANCE:
-- Kanji vượt level PHẢI có <ruby><rt>
-- Cấm dạng "Ab". Chọn 1 trong 2: full kanji + furigana HOẶC full hiragana
-- Density per level theo R4 trong rules/vocabulary.md
-
-⛔ ĐÁP ÁN — 4 options newline-separated, KHÔNG prefix "1.", "①", "1)".
-
-Yêu cầu chất lượng câu hỏi:
-- Question_label dùng prefix `question_`. ≥ 2 unique labels per bài
-- Distractor đa dạng ≥ 3 loại bẫy. Mỗi distractor PHẢI dùng info thật từ bài
-- Paraphrase: đáp án đúng KHÔNG copy nguyên văn ≥ 4 từ liên tiếp (N1) / 5 từ (N2-N5)
-- Self-solve verify: tự giải từng câu, KHỚP correct_answer_i
-- Explanation 3 phần (VN + EN)
-
-Sau khi gen xong mỗi bài, BẮT BUỘC tự QC theo checklist trong SKILL.md:
-- Phần A HTML + B Content + C Questions/Answers + D Multi-Q Coverage
-- 1 FAIL = sửa → refresh CSV (nếu sửa HTML) → QC lại
-
-Lưu ý kỹ thuật:
-- Điền Q&A bằng scripts/fill_qa.py (KHÔNG edit CSV tay)
-- Refresh CSV sau sửa HTML: process_html.py --refresh
-- Verify cuối: process_html.py --validate --html-dir assets/html/doan_van_vua
+═══ CUỐI BATCH ═══
+python3 .claude/skills/jlpt-reading-medium-passage/scripts/process_html.py --validate --html-dir assets/html/doan_van_vua --csv sheets/samples_v1.csv
 ```
