@@ -73,14 +73,14 @@ description: >
 
 ## BƯỚC 0: CHUẨN BỊ (1 lần cho batch)
 
-1. **Đọc `rules/rule_doc_hieu.md`** — **Bộ Tiêu Chí Đánh Giá Đọc Hiểu JLPT toàn diện** từ giáo viên (source-of-truth, 11 phần: 4 tiêu chí, 程度 ±, 書き下ろし/による, ①② 下線 空欄 注 ※, **文体の統一 (thể chia)**, furigana per level, 8 loại câu hỏi, 5 loại bẫy chuẩn (+ Single-side cho 統合理解), tiêu chí chi tiết per level).
+1. **Đọc `rules/rule_doc_hieu.md`** — **Bộ Tiêu Chí Đánh Giá Đọc Hiểu JLPT toàn diện** từ giáo viên (source-of-truth, 11 phần: 4 tiêu chí, 程度 ±, 書き下ろし/による, ①② 下線 空欄 注 ※, **文体の統一 (thể chia)**, furigana per level, 8 loại câu hỏi, **7 loại bẫy** (5 chuẩn + Single-side cho 統合理解 + Peripheral Source cho N1), tiêu chí chi tiết per level).
    **Phần áp dụng trực tiếp cho dạng đoạn văn vừa (中文)**:
    - Phần 1 (Tổng quan & Nguyên tắc 程度) — biên ± per level
    - Phần 2 (Hình thức) — phân bổ ①② 下線 注 theo dạng bài; N4 中文 bắt đầu có ①②
    - **Phần 2.4 (Thể chia nhất quán 文体の統一)** — N1/N2/N3 dùng **普通形** (だ・である); N4/N5 dùng **ます形** (です・ます). Văn bản + câu hỏi + 4 đáp án phải **thống nhất thể chia**. N5 thêm **わかち書き** (khoảng trắng giữa các cụm từ).
    - Phần 3 (Furigana) — bảng quy tắc per level
    - Phần 4 (8 loại câu hỏi) — đặc biệt content_match, reference, reason_explanation, content_mismatch (N3), author_opinion (N2), fill_in (N1/N2)
-   - Phần 5 (5 loại bẫy chuẩn)
+   - Phần 5 (7 loại bẫy = 5 chuẩn + Single-side + Peripheral Source)
    - **Phần 6.2 (N5 中文)**, **Phần 7.2 (N4 中文)**, **Phần 8.2 (N3 中文)**, **Phần 9.2 (N2 中文)**, **Phần 10.2 (N1 中文)** — tiêu chí chi tiết 4 chiều cho từng level
    - Phần 11 (Bảng so sánh tổng hợp) — tra cứu nhanh.
 2. **Đọc rules skill**: `rules/content.md` + `rules/vocabulary.md` + `rules/technical.md` + `rules/questions.md`
@@ -196,6 +196,21 @@ Trước khi sang BƯỚC 2 (QC), agent PHẢI confirm:
 
 ---
 
+### 🔒 GATE 2→3 — KHÔNG QUA = KHÔNG ĐƯỢC ĐÁNH GIÁ CHECKLIST
+
+Trước khi vào BƯỚC 3 (đánh giá 30 mục checklist), agent PHẢI cam kết:
+
+- [ ] **TÔI SẼ kiểm tra ĐẦY ĐỦ 30 mục** — không skip, không "tạm bỏ qua", không "mục này hiển nhiên PASS"
+- [ ] **TÔI SẼ đọc lại HTML + CSV thực tế** trước khi tick mục — KHÔNG dựa vào "tôi đoán/nhớ"
+- [ ] **TÔI SẼ log explicit PASS/FAIL** cho từng mục với evidence (số ký tự, dòng nội dung, trích dẫn)
+- [ ] **TÔI SẼ KHÔNG markup hàng loạt PASS** — phải đánh giá độc lập từng mục
+- [ ] **TÔI SẼ đặc biệt cẩn thận** mục self-solve (BẮT BUỘC giải lại bài từ đầu, không nhìn correct_answer)
+
+❌ Bất kỳ cam kết nào CHƯA tick → quay lại BƯỚC 2 (đọc lại checklist instructions).
+✅ Khi 5/5 tick → log `GATE 2→3 PASSED — bắt đầu đánh giá 30 mục checklist`.
+
+---
+
 ### BƯỚC 3: ⛔ CHECKLIST — TẤT CẢ PHẢI PASS
 
 > **Quy tắc: 1 FAIL = chưa xong. Sửa → QC lại từ đầu → lặp đến khi ALL PASS.**
@@ -264,6 +279,25 @@ Agent đọc TOÀN BỘ câu hỏi + 4 đáp án từ CSV và đánh giá từng
 |----|-------|-------------|----------|
 | 29 | **Mỗi câu hỏi test đoạn/ý KHÁC nhau** | Xác định paragraph/ý mà mỗi câu hỏi chỉ vào | Không 2 câu cùng hỏi 1 paragraph/ý/cụm từ reference. Q1 + Q2 (+ Q3) phủ ≥ 2 paragraph khác nhau |
 | 30 | **Marker/blank khớp câu hỏi tương ứng** | Với mỗi `①`/`②`/`[ ① ]` trong HTML, confirm có câu hỏi hỏi về nó | Không có marker dư (không câu hỏi hỏi) và không câu hỏi nào hỏi marker không tồn tại |
+
+---
+
+### 🔒 GATE 3→4 — KHÔNG QUA = KHÔNG ĐƯỢC SỬA
+
+Sau khi đánh giá 30 mục, agent PHẢI confirm trước khi vào fix loop:
+
+- [ ] Đã hoàn tất đánh giá ĐẦY ĐỦ 30/30 mục (không thiếu mục nào)
+- [ ] Đã liệt kê **chính xác** danh sách các mục FAIL (số mục + lý do FAIL)
+- [ ] Mỗi FAIL có **diagnosis cụ thể** (sửa cái gì, ở đâu, theo rule nào)
+- [ ] Phân biệt rõ **fix HTML** (cần `--refresh` CSV sau) vs **fix CSV** (chỉ cần `fill_qa.py`) vs **fix Q&A logic** (gen lại distractor)
+
+> **🚨 LƯU Ý ĐẶC BIỆT:**
+> - Nếu **≥ 50% mục FAIL** → bài này hỏng tổng thể → **GEN LẠI TỪ ĐẦU** (giữ `_id`), KHÔNG fix vá
+> - Nếu **mục #25/#26 (self-solve) FAIL** → đáp án có vấn đề logic → BẮT BUỘC review lại bài + Q+A, có thể GEN LẠI
+> - Nếu **char count FAIL > Hard Reject** → GEN LẠI HOÀN TOÀN (giữ `_id`)
+
+❌ Bất kỳ item nào CHƯA tick → quay lại BƯỚC 3 đánh giá lại.
+✅ Khi 4/4 tick → log `GATE 3→4 PASSED — fix list: [#x, #y, #z] với diagnoses` rồi sang BƯỚC 4.
 
 ---
 
